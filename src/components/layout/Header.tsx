@@ -4,10 +4,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
+import { useTranslation } from "react-i18next";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
 
 export const Header = () => {
-  const [cartCount] = useState(3);
-  const [wishlistCount] = useState(5);
+  const { t } = useTranslation('common');
+  const cartCount = useCartStore((state) => state.getItemCount());
+  const wishlistCount = useWishlistStore((state) => state.getItemCount());
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -15,7 +20,7 @@ export const Header = () => {
       <div className="bg-gradient-primary text-primary-foreground py-2">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm font-medium">
-            🎉 Free shipping on orders over $50 | Use code: FREESHIP
+            🎉 {t('hero.free_shipping_badge')} | {t('hero.discount_badge')}
           </p>
         </div>
       </div>
@@ -38,7 +43,7 @@ export const Header = () => {
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
-                placeholder="Search products, brands, and more..."
+                placeholder={t('actions.search') + "..."}
                 className="pl-10 pr-4 py-3 w-full bg-muted/50 border-none focus:bg-background focus:ring-2 focus:ring-primary/20"
               />
             </div>
@@ -72,6 +77,9 @@ export const Header = () => {
               )}
             </Button>
 
+            {/* Language switcher */}
+            <LanguageSwitcher />
+
             {/* Theme toggle */}
             <ThemeToggle />
 
@@ -89,14 +97,14 @@ export const Header = () => {
 
         {/* Navigation */}
         <nav className="hidden md:flex items-center gap-6 mt-4 pt-4 border-t border-border">
-          <Button variant="ghost" className="font-medium">Electronics</Button>
-          <Button variant="ghost" className="font-medium">Fashion</Button>
-          <Button variant="ghost" className="font-medium">Home & Garden</Button>
-          <Button variant="ghost" className="font-medium">Sports</Button>
-          <Button variant="ghost" className="font-medium">Books</Button>
-          <Button variant="ghost" className="font-medium">Beauty</Button>
+          <Button variant="ghost" className="font-medium">{t('categories.electronics')}</Button>
+          <Button variant="ghost" className="font-medium">{t('categories.fashion')}</Button>
+          <Button variant="ghost" className="font-medium">{t('categories.home')}</Button>
+          <Button variant="ghost" className="font-medium">{t('categories.sports')}</Button>
+          <Button variant="ghost" className="font-medium">{t('categories.books')}</Button>
+          <Button variant="ghost" className="font-medium">{t('categories.beauty')}</Button>
           <Button variant="ghost" className="font-medium text-sale">
-            🔥 Flash Deals
+            🔥 {t('navigation.deals')}
           </Button>
         </nav>
       </div>

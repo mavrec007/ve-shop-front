@@ -174,5 +174,48 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', 'Cairo', system-ui, sans-serif;
+  }
+
+  /* RTL Support */
+  [dir="rtl"] {
+    font-family: 'Cairo', 'Tajawal', system-ui, sans-serif;
+  }
+
+  [dir="rtl"] .flip-x {
+    transform: scaleX(-1);
+  }
+
+  /* Typography improvements for Arabic */
+  [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4, [dir="rtl"] h5, [dir="rtl"] h6 {
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  [dir="rtl"] p, [dir="rtl"] span {
+    line-height: 1.6;
+  }
+
+  /* Smooth transitions for direction changes */
+  * {
+    transition: margin 0.3s ease, padding 0.3s ease;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
   }
 }

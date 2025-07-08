@@ -3,6 +3,10 @@ import { Heart, ShoppingCart, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { useTranslation } from "react-i18next";
+import { useCartStore } from "@/store/cartStore";
+import { useWishlistStore } from "@/store/wishlistStore";
+import { toast } from "sonner";
 
 interface ProductCardProps {
   id: string;
@@ -27,14 +31,47 @@ export const ProductCard = ({
   badge,
   isOnSale
 }: ProductCardProps) => {
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const { t } = useTranslation('common');
   const [isLoading, setIsLoading] = useState(false);
+  
+  const addToCart = useCartStore((state) => state.addItem);
+  const addToWishlist = useWishlistStore((state) => state.addItem);
+  const removeFromWishlist = useWishlistStore((state) => state.removeItem);
+  const isInWishlist = useWishlistStore((state) => state.isInWishlist(id));
 
   const handleAddToCart = async () => {
     setIsLoading(true);
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 500));
+    
+    addToCart({
+      id,
+      name,
+      price,
+      originalPrice,
+      image
+    });
+    
+    toast.success(t('messages.item_added_to_cart'));
     setIsLoading(false);
+  };
+
+  const handleWishlistToggle = () => {
+    if (isInWishlist) {
+      removeFromWishlist(id);
+      toast.success(t('messages.item_removed_from_wishlist'));
+    } else {
+      addToWishlist({
+        id,
+        name,
+        price,
+        originalPrice,
+        image,
+        rating,
+        reviewCount
+      });
+      toast.success(t('messages.item_added_to_wishlist'));
+    }
   };
 
   const discount = originalPrice ? Math.round(((originalPrice - price) / originalPrice) * 100) : 0;
@@ -71,14 +108,14 @@ export const ProductCard = ({
           variant="ghost"
           size="icon"
           className={`absolute top-3 right-3 transition-all duration-fast ${
-            isWishlisted 
+            isInWishlist 
               ? 'bg-background text-sale' 
               : 'bg-background/80 text-muted-foreground hover:text-sale'
           }`}
-          onClick={() => setIsWishlisted(!isWishlisted)}
+          onClick={handleWishlistToggle}
         >
           <Heart 
-            className={`w-4 h-4 ${isWishlisted ? 'fill-current' : ''}`} 
+            className={`w-4 h-4 ${isInWishlist ? 'fill-current' : ''}`} 
           />
         </Button>
 
@@ -90,7 +127,7 @@ export const ProductCard = ({
             disabled={isLoading}
           >
             <ShoppingCart className="w-4 h-4 mr-2" />
-            {isLoading ? 'Adding...' : 'Add to Cart'}
+            {isLoading ? t('messages.loading') : t('actions.add_to_cart')}
           </Button>
         </div>
       </div>
@@ -116,7 +153,7 @@ export const ProductCard = ({
             ))}
           </div>
           <span className="text-sm text-muted-foreground">
-            ({reviewCount})
+            ({reviewCount} {t('labels.reviews')})
           </span>
         </div>
 
